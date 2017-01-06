@@ -11,18 +11,15 @@
 'use strict';
 
 module.exports = function(app){
-    app.get('/', function(req, res){
-
-        console.log(req);
-
-        let login = '';
-
-        if(req.user){
-            console.log(req.user);
-            login = req.user.login;
-        }
-
-        res.render('index', {'userLogged': login, 'working': 'yes'});
-
-    });
+    app.route(['/', '/index', '/home', '/site'])
+        .get(function(req, res){
+            console.log(req);
+            let login = '';
+            if(req.user){
+                console.log(req.user);
+                login = req.user.login;
+            }
+            res.send({'userLogged': login, 'working': 'yes'});
+            //res.render('index', {'userLogged': login, 'working': 'yes'});
+        });
 };
