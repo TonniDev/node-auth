@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server"
+    "start": "PORT=3000 URL=localhost node server"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,12 @@
   "homepage": "https://github.com/TonniDev/node-auth#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
-
-    "cookie-parser": "^1.4.3",    "express": "^4.14.0",
+<<<<<<< HEAD
+    "cookie-parser": "^1.4.3",
+=======
+    "dotenv": "^2.0.0",
+>>>>>>> feature/routes
+    "express": "^4.14.0",
     "express-load": "^1.1.15",
     "express-session": "^1.14.2",
     "method-override": "^2.3.7",

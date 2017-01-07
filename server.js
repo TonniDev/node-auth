@@ -9,7 +9,7 @@
  *03/01/17-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  */
 'use strict';
-
+require('dotenv').config();
 const http = require('http');
 const app = require('./config/express')();
 require('./config/database')('mongodb://localhost/auth');
