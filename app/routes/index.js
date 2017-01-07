@@ -14,7 +14,7 @@ module.exports = function(app){
     app.route(['/', '/index', '/home', '/site'])
         .get(function(req, res){
             console.log(req);
-            let login = '';
+            let login = {};
             if(req.user){
                 console.log(req.user);
                 login = req.user.login;

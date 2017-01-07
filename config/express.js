@@ -11,7 +11,6 @@
 'use strict';
 
 const express = require('express');
-const route = express.Router();
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const passport = require('passport');
