@@ -11,41 +11,44 @@
 'use strict';
 
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const passport = require('passport');
-const bodyParser = require('body-parser');
 const session = require('express-session');
 const load = require('express-load');
+const morgan = require('morgan');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 module.exports = function(){
     let app = express();
 
     app.set('port', process.env.PORT || 3000);
 
-
     app.use(express.static('./public'));
 
-    app.set('views', './public');
+    app.set('views', './app/views');
+    app.set('view engine', 'ejs');
     app.set('views cache', true);
 
     app.use(morgan('dev'));
     app.use(cookieParser());
-    app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: true}));
     app.use(session({
         secret: 'simpleauth',
         resave: true,
         saveUninitialized: true
     }));
-    app.use(passport.initialize());
-    app.use(passport.session());
+
     app.use(require('method-override')());
 
     load('models', {cwd: 'app'})
         .then('controllers')
         .then('routes')
         .into(app);
+
+    require('./passport')(passport);
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     return app;
 };

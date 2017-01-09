@@ -6,17 +6,23 @@
  *....| |/ _ \| '_ \| '_ \| | |  | |/ _ \ \ / /
  *....| | (_) | | | | | | | | |__| |  __/\ V /
  *....|_|\___/|_| |_|_| |_|_|_____/ \___| \_/ v1.0
- *03/01/17-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ *08/01/17-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  */
 'use strict';
 
+const passport = require('passport');
+
 module.exports = function(app){
-    app.get('/', function(req, res){
-            let login = {};
+    app.route('/signup')
+        .get(function(req, res){
+            let user = '';
             if(req.user){
-                login = req.user;
+                user = req.user
             }
-            res.send({'userLogged': login});
-            //res.render('index', {'userLogged': login});
-        });
-};
+            res.render('signup', {message: user});
+        })
+        .post(passport.authenticate('local-signup', {
+            successRedirect: '/profile',
+            failureRedirect: '/signup'
+        }));
+}
