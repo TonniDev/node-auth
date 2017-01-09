@@ -21,11 +21,12 @@ module.exports = function(app){
             }
             res.render('signup', {message: user});
         })
-        .post(passport.authenticate('local-signup', /*{
+        .post(passport.authenticate('local-signup' /*{
             successRedirect: '/profile',
             failureRedirect: '/signup'
         }*/
-        function(req, res){
-            res.send(req.user);
-        }));
+        ), function(req, res){
+            console.log(res);
+            res.send('SIGNED IN');
+        });
 }

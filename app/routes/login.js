@@ -24,7 +24,7 @@ module.exports = function(app){
         }*/
         ),function(req, res){
             console.log(res);
-            res.send('ok');
+            res.send('LOGGED IN');
         });
 };
 

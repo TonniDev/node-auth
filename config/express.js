@@ -47,7 +47,7 @@ module.exports = function(){
         .then('controllers')
         .then('routes')
         .into(app);
-
+    //TODO: se eu chamar o config do passport antes do passport.initialize() o model não carrega e não registra o model de usuário no mongo.
     require('./passport')(passport);
 
     return app;
