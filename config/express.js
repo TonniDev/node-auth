@@ -39,6 +39,8 @@ module.exports = function(){
         saveUninitialized: true
     }));
 
+    app.use(passport.initialize());
+    app.use(passport.session());
     app.use(require('method-override')());
 
     load('models', {cwd: 'app'})
@@ -47,8 +49,6 @@ module.exports = function(){
         .into(app);
 
     require('./passport')(passport);
-    app.use(passport.initialize());
-    app.use(passport.session());
 
     return app;
 };

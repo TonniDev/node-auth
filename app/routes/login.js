@@ -18,10 +18,14 @@ module.exports = function(app){
             //res.send({});
             res.render('login.ejs', { message: 'MENSAGEM' });
         })
-        .post(passport.authenticate('local-login', {
+        .post(passport.authenticate('local-login' /*{
             successRedirect:'/profile',
             failureRedirect: '/login'
-        }));
+        }*/
+        ),function(req, res){
+            console.log(res);
+            res.send('ok');
+        });
 };
 
 
