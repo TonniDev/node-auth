@@ -11,10 +11,11 @@
 'use strict';
 
 const passport = require('passport');
+const fs = require('fs');
 
-module.exports = function(app){
+module.exports = (app)=>{
     app.route('/signup')
-        .get(function(req, res){
+        .get((req, res)=>{
             let user = '';
             if(req.user){
                 user = req.user
@@ -25,8 +26,25 @@ module.exports = function(app){
             successRedirect: '/profile',
             failureRedirect: '/signup'
         }*/
-        ), function(req, res){
-            console.log(res);
-            res.send('SIGNED IN');
+        ), (req, res)=>{
+
+            var cache = [];
+            var resJson = JSON.stringify(res, (key, value) => {
+                if (typeof value === 'object' && value !== null) {
+                    if (cache.indexOf(value) !== -1) {
+                        // Circular reference found, discard key
+                        return;
+                    }
+                    // Store value in our collection
+                    cache.push(value);
+                }
+                return value;
+            });
+            cache = null;
+            fs.writeFile('.log/signup_response.json', resJson, 'utf8', (err)=>{
+                if(err) throw err;
+            });
+            let response = {id: req.user._id, status: "success"}
+            res.send(response);
         });
 }
