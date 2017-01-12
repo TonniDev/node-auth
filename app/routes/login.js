@@ -11,6 +11,7 @@
 'use strict';
 
 const passport = require('passport');
+const fs = require('fs');
 
 module.exports = function(app){
     app.route('/login')
@@ -23,8 +24,27 @@ module.exports = function(app){
             failureRedirect: '/login'
         }*/
         ),function(req, res){
-            console.log(res);
-            res.send('LOGGED IN');
+
+            let cache = [];
+            let resJson = JSON.stringify(res, (key, value) => {
+                if (typeof value === 'object' && value !== null) {
+                    console.log(value);
+                    if (cache.indexOf(value) !== -1) {
+                        // Circular reference found, discard key
+                        return;
+                    }
+                    // Store value in our collection
+                    cache.push(value);
+                }
+                return value;
+            });
+            cache = null;
+            fs.writeFile('.log/login_response.json', resJson, 'utf8', (err)=>{
+                if(err) throw err;
+            });
+
+            let response = {id: req.user._id, status: 'success'};
+            res.send(response);
         });
 };
 

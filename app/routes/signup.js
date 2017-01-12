@@ -28,9 +28,10 @@ module.exports = (app)=>{
         }*/
         ), (req, res)=>{
 
-            var cache = [];
-            var resJson = JSON.stringify(res, (key, value) => {
+            let cache = [];
+            let resJson = JSON.stringify(res, (key, value) => {
                 if (typeof value === 'object' && value !== null) {
+                    //console.log(value);
                     if (cache.indexOf(value) !== -1) {
                         // Circular reference found, discard key
                         return;
@@ -44,7 +45,8 @@ module.exports = (app)=>{
             fs.writeFile('.log/signup_response.json', resJson, 'utf8', (err)=>{
                 if(err) throw err;
             });
-            let response = {id: req.user._id, status: "success"}
+
+            let response = {id: req.user._id, status: "success"};
             res.send(response);
         });
 }
