@@ -10,10 +10,8 @@
  */
 'use strict';
 const mongoose = require('mongoose');
-//const passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-//require('../app/models/User');
-//const User = require('../app/models/User.js');
+const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 
 module.exports = function(passport){
 
@@ -38,40 +36,6 @@ module.exports = function(passport){
             done(error, user);
         });
     });
-
-    /**LOCAL LOGIN*/
-    passport.use('local-login', new LocalStrategy({
-        //by default, local strategy uses username and password
-        //we will override with email and password
-        usernameField: 'email',
-        passwordField: 'password',
-        passReqToCallback: true //allows to pass in the req from our route (lets us check if a user is logged in or not)
-    },
-    function(req, email, password, done){
-        if(email){
-            email = email.toLowerCase(); //use lowercase emails to avoid case-sensitive email matching
-        }
-
-        User.findOne({'local.email':email}, function(error, user){
-            //in case of any error return it
-            if(error){
-                return done(error);
-            }
-            //if no user is found return false
-            if(!user){
-                //res.send(401, 'Must be logged in');
-                return done(null, 'no user')
-            }
-            //if password wrong return false
-            if(!user.validPassword(password)){
-                return done(null, false);
-            }
-            //if all is well return the user
-            else {
-                return done(null, user);
-            }
-        });
-    }));
 
     /**LOCAL SIGNUP*/
     passport.use('local-signup', new LocalStrategy({
@@ -144,6 +108,106 @@ module.exports = function(passport){
             //the user should loggout before trying to create a new account.
             return done(null, req.user);
         }
-    }))
+    }));
+
+    /**LOCAL LOGIN*/
+    passport.use('local-login', new LocalStrategy({
+        //by default, local strategy uses username and password
+        //we will override with email and password
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true //allows to pass in the req from our route (lets us check if a user is logged in or not)
+    },
+    function(req, email, password, done){
+        if(email){
+            email = email.toLowerCase(); //use lowercase emails to avoid case-sensitive email matching
+        }
+
+        User.findOne({'local.email':email}, function(error, user){
+            //in case of any error return it
+            if(error){
+                return done(error);
+            }
+            //if no user is found return false
+            if(!user){
+                //res.send(401, 'Must be logged in');
+                return done(null, 'no user')
+            }
+            //if password wrong return false
+            if(!user.validPassword(password)){
+                return done(null, false);
+            }
+            //if all is well return the user
+            else {
+                return done(null, user);
+            }
+        });
+    }));
+
+    /**FACEBOOK LOGIN/SIGNUP*/
+    passport.use('facebook', new FacebookStrategy({
+        'clientID': '858054390961784',
+        'clientSecret': '89599377b6251110030b34f88a645743',
+        'callbackURL'     : 'http://localhost:9090/auth/facebook/callback',
+        'profileURL': 'https://graph.facebook.com/v2.8/me?fields=first_name,last_name,email',
+        passReqToCallback: true
+    },
+    (req, token, refreshToken, profile, done)=>{
+        //Check if user is already logged in
+        if(!req.user){
+            console.log(':::No user logged in:::');
+            User.findOne({"facebook.id" : profile.id}, (error, user)=>{
+                if(error){
+                    return done(error);
+                }
+                if(user){
+                    if(!user.facebook.token){
+                        console.log(':::User registered. Connecting:::')
+                        user.facebook.token = token;
+                        user.facebook.name = profile.name.givenName + " " + profile.name.familyName;
+                        user.facebook.email = (profile.emails[0].value || "").toLowerCase();
+
+                        user.save((error)=>{
+                            if(error){
+                                return done(error);
+                            }
+                            return done(null, user);
+                        });
+                    }
+                    return done(null, user);
+                }
+                else {
+                    console.log(':::No user found:::', profile.id);
+                    let newUser = new User();
+                    newUser.facebook.id = profile.id;
+                    newUser.facebook.token = token;
+                    newUser.facebook.name = profile.name.givenName + " " + profile.name.familyName;
+                    newUser.facebook.email = (profile.emails[0].value || "").toLowerCase();
+
+                    newUser.save((error)=>{
+                        if(error){
+                            console.log(':::ERROR:::', error);
+                            return done(error);
+                        }
+                        return done(null, newUser);
+                    });
+                }
+            });
+        }
+        else {
+            let user = req.user;
+            user.facebook.id = profile.id;
+            user.facebook.token = token;
+            user.facebook.name = profile.name.givenName + " " + profile.name.familyName;
+            user.facebook.email = (profile.emails[0].value || "").toLowerCase();
+
+            user.save((error)=>{
+                if(error){
+                    return done(error);
+                }
+                return done(null, user);
+            });
+        }
+    }));
 
 };

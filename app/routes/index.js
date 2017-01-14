@@ -16,7 +16,7 @@ module.exports = function (app) {
         if (req.user) {
             login = req.user;
         }
-        res.send({'userLogged': login});
-        //res.render('index', {'userLogged': login});
+        //res.send({'userLogged': login});
+        res.render('index', {'userLogged': login});
     });
 };

@@ -18,14 +18,33 @@ module.exports = function(){
         local: {
             email: {
                 type: String,
-                required: true,
                 index:{
                     unique: true
                 }
             },
             password: {
+                type: String
+            },
+            created: {
+                type: Date,
+                default: Date.now
+            }
+        },
+        facebook: {
+            id: {
                 type: String,
-                required: true
+            },
+            token: {
+                type: String
+            },
+            email: {
+                type: String,
+                index: {
+                    unique: true
+                }
+            },
+            name: {
+                type: String
             },
             created: {
                 type: Date,
