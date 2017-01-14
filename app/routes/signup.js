@@ -22,11 +22,10 @@ module.exports = (app)=>{
             }
             res.render('signup', {message: user});
         })
-        .post(passport.authenticate('local-signup' /*{
+        .post(passport.authenticate('local-signup', {
             successRedirect: '/profile',
             failureRedirect: '/signup'
-        }*/
-        ), (req, res)=>{
+        }), (req, res)=>{
 
             let cache = [];
             let resJson = JSON.stringify(res, (key, value) => {

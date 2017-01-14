@@ -95,7 +95,7 @@ module.exports = function(passport){
                 //Check if theres already a user with that email
                 if(user){
                     console.log(user);
-                    return done(null, false);
+                    return done(null, false, 'User already exists.');
                 }
                 //If no user then creates the user
                 else{

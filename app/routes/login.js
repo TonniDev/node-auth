@@ -13,17 +13,19 @@
 const passport = require('passport');
 const fs = require('fs');
 
-module.exports = function(app){
+module.exports = (app)=>{
     app.route('/login')
-        .get(function(req, res){
-            //res.send({});
-            res.render('login.ejs', { message: 'MENSAGEM' });
+        .get((req, res)=>{
+            let user = '';
+            if(req.user){
+                user = req.user
+            }
+            res.render('login.ejs', { message: user });
         })
-        .post(passport.authenticate('local-login' /*{
+        .post(passport.authenticate('local-login', {
             successRedirect:'/profile',
             failureRedirect: '/login'
-        }*/
-        ),function(req, res){
+        }),(req, res)=>{
 
             let cache = [];
             let resJson = JSON.stringify(res, (key, value) => {
