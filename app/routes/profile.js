@@ -14,7 +14,8 @@ module.exports = (app)=>{
 
     app.get('/profile', isLoggedIn, function(req, res) {
         res.render('profile.ejs', {
-            user : req.user
+            user : req.user,
+            message: req.flash('loginMessage')
         });
     });
 

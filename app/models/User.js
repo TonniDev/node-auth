@@ -61,7 +61,8 @@ module.exports = function(){
     return mongoose.model('User', userSchema);
 };
 
-/** TODO: se eu usar como abaixo não funciona, porém eu vi um exemplo funcionando desta maneira. Qual a diferença?
+/** TODO: se eu usar como abaixo não funciona, porém eu vi um exemplo funcionando desta maneira.
+ * Qual a diferença?
     let userSchema = mongoose.Schema({
         local: {
             email: {

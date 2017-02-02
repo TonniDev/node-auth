@@ -142,7 +142,7 @@ module.exports = function(passport){
             }
             //if all is well return the user
             else {
-                return done(null, user);
+                return done(null, user, req.flash('loginMessage', 'Welcome ' + user.local.email));
             }
         });
     }));
