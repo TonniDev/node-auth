@@ -27,6 +27,9 @@ module.exports = function(passport){
 
     //Serialize user for the session
     passport.serializeUser(function(user, done){
+        if(user.id){
+            console.log(user.id);
+        }
         done(null, user.id);
     });
 
@@ -131,11 +134,11 @@ module.exports = function(passport){
             //if no user is found return false
             if(!user){
                 //res.send(401, 'Must be logged in');
-                return done(null, 'no user')
+                return done(null, false, req.flash('loginMessage', 'No user found.'));
             }
             //if password wrong return false
             if(!user.validPassword(password)){
-                return done(null, false);
+                return done(null, false, req.flash('loginMessage', 'Wrong password.'));
             }
             //if all is well return the user
             else {
@@ -162,7 +165,7 @@ module.exports = function(passport){
                 }
                 if(user){
                     if(!user.facebook.token){
-                        console.log(':::User registered. Connecting:::')
+                        console.log(':::User registered. Connecting:::');
                         user.facebook.token = token;
                         user.facebook.name = profile.name.givenName + " " + profile.name.familyName;
                         user.facebook.email = (profile.emails[0].value || "").toLowerCase();

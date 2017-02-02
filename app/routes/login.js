@@ -12,25 +12,31 @@
 
 const passport = require('passport');
 const fs = require('fs');
+const caches = require('../../config/caches');
 
 module.exports = (app)=>{
     app.route('/login')
         .get((req, res)=>{
             let user = '';
             if(req.user){
-                user = req.user
+                user = req.user;
             }
-            res.render('login.ejs', { message: user });
+            res.render('login.ejs', { message: req.flash('loginMessage') });
         })
         .post(passport.authenticate('local-login', {
-            successRedirect:'/profile',
-            failureRedirect: '/login'
+            //successRedirect:'/profile',
+            failureRedirect: '/login',
+            failureFlash : true
         }),(req, res)=>{
 
+            let userCached = caches.userCache.get('user-cached');
+            console.log('CACHE:::', userCached);
+
             let cache = [];
+
             let resJson = JSON.stringify(res, (key, value) => {
                 if (typeof value === 'object' && value !== null) {
-                    console.log(value);
+                    //console.log(value);
                     if (cache.indexOf(value) !== -1) {
                         // Circular reference found, discard key
                         return;

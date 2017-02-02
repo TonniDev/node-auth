@@ -17,6 +17,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const flash = require('connect-flash');
 
 module.exports = function(){
     let app = express();
@@ -41,6 +42,7 @@ module.exports = function(){
 
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(flash());
     app.use(require('method-override')());
 
     load('models', {cwd: 'app'})
