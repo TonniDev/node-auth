@@ -11,9 +11,13 @@
 'use strict';
 
 const passport = require('passport');
+const mongoose = require('mongoose');
 const fs = require('fs');
 
 module.exports = (app)=>{
+
+    let User = mongoose.model('User');
+
     app.route('/signup')
         .get((req, res)=>{
             let user = '';
@@ -47,5 +51,9 @@ module.exports = (app)=>{
 
             let response = {id: req.user._id, status: "success"};
             res.send(response);
+        });
+    app.route('/uplaod')
+        .post((req, res)=>{
+
         });
 }

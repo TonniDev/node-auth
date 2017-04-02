@@ -18,6 +18,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 module.exports = function(){
     let app = express();
@@ -38,6 +39,13 @@ module.exports = function(){
         secret: 'simpleauth',
         resave: true,
         saveUninitialized: true
+    }));
+
+    app.use(multer({
+        dest: './uploads/',
+        rename: function(fieldname, filename){
+            return filename;
+    }
     }));
 
     app.use(passport.initialize());

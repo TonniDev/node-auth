@@ -25,6 +25,10 @@ module.exports = function(){
             password: {
                 type: String
             },
+            picture: {
+                data: Buffer,
+                contentType: String
+            },
             created: {
                 type: Date,
                 default: Date.now
@@ -51,6 +55,7 @@ module.exports = function(){
                 default: Date.now
             }
         }
+
     });
     userSchema.methods.generateHash = function(password){
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
